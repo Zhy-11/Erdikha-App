@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:email_validator/email_validator.dart';
 import 'package:erdhika/screens/forgot_password_screen.dart';
 import 'package:erdhika/screens/navigation_screen.dart';
@@ -6,6 +8,8 @@ import 'package:erdhika/widgets/button_main_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,6 +23,55 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
   num angka = 0;
+
+  Future<void> login(String email, String password) async {
+    final apiUrl = 'http://10.10.10.187:8080/api/login';
+
+    final response = await http.post(Uri.parse(apiUrl), body: {
+      'email': email,
+      'password': password,
+    });
+
+    if (response.statusCode == 200) {
+      //mengambil data token
+      final token = json.decode(response.body)['access_token'];
+
+      //mengabil data user
+      final user = json.decode(response.body)['user'];
+
+      //menyimpan data token
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+
+      //berpindah halaman
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NavigationScreen(),
+        ),
+        (route) => false,
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Login Failed'),
+            content: Text('Invalid email or password.'),
+            actions: <Widget>[
+              // ignore: deprecated_member_use
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,8 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: height * 0.1),
-                    Center(
-                        child: Image.asset("assets/images/logo.png", scale: 5)),
+                    Center(child: Image.asset("assets/images/logo.png", scale: 5)),
                     SizedBox(height: 35),
                     Text(
                       "Email id",
@@ -89,14 +141,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       // onTapOutside: (event) =>
                       //     FocusManager.instance.primaryFocus?.unfocus(),
                       validator: (value) =>
-                          (value != null && !EmailValidator.validate(value))
-                              ? "This Field is Required and include an '@'"
-                              : null,
+                          (value != null && !EmailValidator.validate(value)) ? "This Field is Required and include an '@'" : null,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.grey.shade200,
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Color(0x7F4B4B4B))),
+                        border: OutlineInputBorder(borderSide: BorderSide(color: Color(0x7F4B4B4B))),
                         contentPadding: EdgeInsets.only(
                           bottom: 0,
                           top: 0,
@@ -115,13 +164,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       // onTapOutside: (event) =>
                       //     FocusManager.instance.primaryFocus?.unfocus(),
                       obscureText: true,
-                      validator: (value) =>
-                          value!.isEmpty ? "This Field is Required" : null,
+                      validator: (value) => value!.isEmpty ? "This Field is Required" : null,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.grey.shade200,
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Color(0x7F4B4B4B))),
+                        border: OutlineInputBorder(borderSide: BorderSide(color: Color(0x7F4B4B4B))),
                         contentPadding: EdgeInsets.only(
                           bottom: 0,
                           top: 0,
@@ -132,7 +179,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: 30),
                     ButtonMainWidget(
-                      onTap: () => Get.offAll(() => NavigationScreen()),
+                      onTap: () {
+                        login(emailCtrl.text, passwordCtrl.text);
+                      },
                       text: Text(
                         "Login",
                         style: TextStyle(color: Colors.white),
@@ -175,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: 30),
                     ButtonMainWidget(
-                      onTap: () => Get.offAll(()=>NavigationScreen()),
+                      onTap: () => Get.offAll(() => NavigationScreen()),
                       backgroundColor: Colors.white,
                       borderRadius: 50,
                       border: Border.all(color: Color(0xFF80B3FF), width: 2),
@@ -300,10 +349,8 @@ class PaintTopRight extends CustomPainter {
 
     Path path = Path();
     path.moveTo(size.width / 1.9, 0);
-    path.cubicTo(size.width / 2.7, size.height / 9, size.width / 2.1,
-        size.height / 7, size.width / 1.6, size.height / 6);
-    path.cubicTo(size.width / 1.1, size.height / 5, size.width / 1.24,
-        size.height / 3, size.width, size.height / 3.1);
+    path.cubicTo(size.width / 2.7, size.height / 9, size.width / 2.1, size.height / 7, size.width / 1.6, size.height / 6);
+    path.cubicTo(size.width / 1.1, size.height / 5, size.width / 1.24, size.height / 3, size.width, size.height / 3.1);
     path.lineTo(size.width, 0);
     canvas.drawPath(path, paint);
   }
