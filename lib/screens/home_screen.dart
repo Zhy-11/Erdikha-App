@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  // const HomeScreen({super.key});
+
+  final int id;
+  final String name;
+  final String email;
+  final String token;
+
+  HomeScreen({required this.id, required this.name, required this.email, required this.token});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -15,8 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
     },
     {
       "image": "assets/images/morning-ideas2.png",
-      "title":
-          "Net Sell Asing Semakin Deras, Tapi IHSG Diselamatkan Oleh Kinerja Emiten",
+      "title": "Net Sell Asing Semakin Deras, Tapi IHSG Diselamatkan Oleh Kinerja Emiten",
     },
     {
       "image": "assets/images/morning-ideas3.png",
@@ -69,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(height: height * 0.01),
                   Text(
-                    "Achmad Ziyan Saputra",
+                    "${this.widget.name}",
                     style: TextStyle(
                       color: Colors.white,
                       // fontWeight: FontWeight.w600,
@@ -116,8 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       // height: height * 0.125,
                       child: Column(
                         children: [
-                          Image.asset("assets/images/icon-acc_tracker.png",
-                              scale: 3),
+                          Image.asset("assets/images/icon-acc_tracker.png", scale: 3),
                           Text(
                             "Opening Account Trackers",
                             textAlign: TextAlign.center,
@@ -147,8 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: width * 0.26,
                       child: Column(
                         children: [
-                          Image.asset("assets/images/icon-banner.png",
-                              scale: 3),
+                          Image.asset("assets/images/icon-banner.png", scale: 3),
                           Text(
                             "Gambar Banners",
                             textAlign: TextAlign.center,
@@ -179,8 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: width * 0.26,
                       child: Column(
                         children: [
-                          Image.asset("assets/images/icon-invest_bank.png",
-                              scale: 3),
+                          Image.asset("assets/images/icon-invest_bank.png", scale: 3),
                           Text(
                             "Invesment Banking",
                             textAlign: TextAlign.center,

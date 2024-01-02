@@ -6,7 +6,7 @@ import 'package:erdhika/screens/navigation_screen.dart';
 import 'package:erdhika/screens/register_screen.dart';
 import 'package:erdhika/widgets/button_main_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -27,7 +27,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> login(String email, String password) async {
     final apiUrl = 'http://10.10.10.187:8080/api/login';
 
-    final response = await http.post(Uri.parse(apiUrl), body: {
+    final headers = {
+      'x-api-key': 'MobileErdikha2023',
+    };
+
+    final response = await http.post(Uri.parse(apiUrl), headers: headers, body: {
       'email': email,
       'password': password,
     });
@@ -37,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final token = json.decode(response.body)['access_token'];
 
       //mengabil data user
-      final user = json.decode(response.body)['user'];
+      final user = json.decode(response.body)['data'];
 
       //menyimpan data token
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -47,7 +51,12 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (context) => NavigationScreen(),
+          builder: (context) => NavigationScreen(
+            id: user['id'],
+            name: user['name'],
+            email: user['email'],
+            token: token,
+          ),
         ),
         (route) => false,
       );
@@ -224,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: 30),
                     ButtonMainWidget(
-                      onTap: () => Get.offAll(() => NavigationScreen()),
+                      onTap: () => Get.offAll(() => ()),
                       backgroundColor: Colors.white,
                       borderRadius: 50,
                       border: Border.all(color: Color(0xFF80B3FF), width: 2),

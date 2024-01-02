@@ -1,14 +1,41 @@
+import 'package:erdhika/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' as http;
 
 class UserScreen extends StatefulWidget {
-  const UserScreen({super.key});
+  // UserScreen({super.key, required this.id, required this.name, required this.email, required this.token});
+
+  late final int id;
+  late final String name;
+  late final String email;
+  late final String token;
+
+  // UserScreen({required this.id, required this.name, required this.email, required this.token});
 
   @override
   State<UserScreen> createState() => _UserScreenState();
 }
 
 class _UserScreenState extends State<UserScreen> {
+  Future<void> handleLogout(String token) async {
+    final url = 'http://10.10.10.187:8080/api/logout';
+    final headers = {
+      'Authorization': 'Bearer ${this.widget.token}',
+      'Content-Type': 'application/json',
+    };
+
+    final response = await http.post(Uri.parse(url), headers: headers);
+
+    print(response.body);
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+      (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
@@ -35,10 +62,7 @@ class _UserScreenState extends State<UserScreen> {
                       child: Center(
                         child: Text(
                           "Achmad Ziyan Saputra",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                              fontWeight: FontWeight.w500),
+                          style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w500),
                         ),
                       ),
                     ),
@@ -48,9 +72,7 @@ class _UserScreenState extends State<UserScreen> {
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(100),
-                          boxShadow: [
-                            BoxShadow(blurRadius: 10, spreadRadius: -6)
-                          ]),
+                          boxShadow: [BoxShadow(blurRadius: 10, spreadRadius: -6)]),
                       child: Icon(
                         Icons.person,
                         size: 70,
@@ -205,7 +227,6 @@ class _UserScreenState extends State<UserScreen> {
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
-                                
                               ],
                             ),
                           ),
@@ -227,12 +248,17 @@ class _UserScreenState extends State<UserScreen> {
                             ),
                           ),
                         ),
-                        Text(
-                          "Keluar",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xff0071BC),
+                        GestureDetector(
+                          onTap: () {
+                            handleLogout(this.widget.token);
+                          },
+                          child: Text(
+                            "Keluar",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff0071BC),
+                            ),
                           ),
                         ),
                       ],
