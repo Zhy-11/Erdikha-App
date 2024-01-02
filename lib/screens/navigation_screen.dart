@@ -5,16 +5,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class NavigationScreen extends StatefulWidget {
-  const NavigationScreen({super.key});
+  // const NavigationScreen({super.key, required id, required name, required email, required token});
+
+  final int id;
+  final String name;
+  final String email;
+  final String token;
+
+  NavigationScreen({required this.id, required this.name, required this.email, required this.token});
 
   @override
   State<NavigationScreen> createState() => _NavigationScreenState();
 }
 
 class _NavigationScreenState extends State<NavigationScreen> {
+  String nama = 'fadjar';
   int _selectedIndex = 0;
   List screenBar = [
-    HomeScreen(),
+    HomeScreen(
+      id: 1,
+      name: 'fadjar',
+      email: 'asdasd@hdasjkd',
+      token: 'asdasdasd',
+    ),
     InboxScreen(),
     UserScreen(),
   ];
