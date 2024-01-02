@@ -22,18 +22,16 @@ class ButtonMainWidget extends StatelessWidget {
     return AnimatedContainer(
       duration: Duration(milliseconds: 150),
       decoration: BoxDecoration(
-        color: backgroundColor,
-        // color: isEnable
-        //           ? LightColors.mainColor
-        //           : LightColors.mainColor.withOpacity(0.4),
+        // color: backgroundColor,
+        color: isEnable ? backgroundColor : backgroundColor.withOpacity(0.4),
         borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
         border: border ?? null,
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          splashColor: !isEnable ? Colors.transparent : Colors.white.withOpacity(0.3),
-          highlightColor: !isEnable ? Colors.transparent : Colors.white.withOpacity(0.3),
+          splashColor: !isEnable ? Colors.transparent : null,
+          highlightColor: !isEnable ? Colors.transparent : null,
           borderRadius: BorderRadius.all(Radius.circular(5)),
           onTap: onTap,
           child: Container(
